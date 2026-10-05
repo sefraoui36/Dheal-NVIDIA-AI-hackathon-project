@@ -1,0 +1,101 @@
+﻿[
+    {
+        "stiffness":  "moderate",
+        "timestamp":  "2026-09-26T09:00:00",
+        "joint":  "knee_right",
+        "type":  "pain",
+        "score":  6
+    },
+    {
+        "stiffness":  "moderate",
+        "timestamp":  "2026-09-27T09:00:00",
+        "joint":  "knee_right",
+        "type":  "pain",
+        "score":  5
+    },
+    {
+        "stiffness":  "mild",
+        "timestamp":  "2026-09-28T09:00:00",
+        "joint":  "knee_right",
+        "type":  "pain",
+        "score":  4
+    },
+    {
+        "stiffness":  "mild",
+        "timestamp":  "2026-09-29T09:00:00",
+        "joint":  "knee_right",
+        "type":  "pain",
+        "score":  3
+    },
+    {
+        "stiffness":  "mild",
+        "timestamp":  "2026-09-30T09:00:00",
+        "joint":  "knee_left",
+        "type":  "pain",
+        "score":  3
+    },
+    {
+        "stiffness":  "none",
+        "timestamp":  "2026-10-01T09:00:00",
+        "joint":  "knee_left",
+        "type":  "pain",
+        "score":  2
+    },
+    {
+        "stiffness":  "none",
+        "timestamp":  "2026-10-02T09:00:00",
+        "joint":  "knee_left",
+        "type":  "pain",
+        "score":  2
+    },
+    {
+        "pain":  5,
+        "timestamp":  "2026-09-28T18:00:00",
+        "wound_state":  "clean",
+        "type":  "wound",
+        "milestones":  [
+                           "walk_room"
+                       ]
+    },
+    {
+        "pain":  4,
+        "timestamp":  "2026-09-29T18:00:00",
+        "wound_state":  "clean",
+        "type":  "wound",
+        "milestones":  [
+                           "walk_room",
+                           "shower"
+                       ]
+    },
+    {
+        "pain":  3,
+        "timestamp":  "2026-09-30T18:00:00",
+        "wound_state":  "clean",
+        "type":  "wound",
+        "milestones":  [
+                           "walk_room",
+                           "shower",
+                           "walk_outside"
+                       ]
+    },
+    {
+        "pain":  3,
+        "timestamp":  "2026-10-01T18:00:00",
+        "wound_state":  "clean",
+        "type":  "wound",
+        "milestones":  [
+                           "walk_outside",
+                           "stairs"
+                       ]
+    },
+    {
+        "pain":  2,
+        "timestamp":  "2026-10-02T18:00:00",
+        "wound_state":  "clean",
+        "type":  "wound",
+        "milestones":  [
+                           "stairs",
+                           "shower"
+                       ]
+    }
+]

@@ -1,0 +1,15 @@
+{
+  "user_id": "user_005",
+  "name": "Sister",
+  "relation": "Sister (expecting)",
+  "age": 29,
+  "avatar_icon": "pregnant_woman",
+  "accent": "pink",
+  "conditions": ["pregnancy_second_trimester"],
+  "notes": "Second pregnancy. Due in 16 weeks.",
+  "pregnancy": {
+    "week": 24,
+    "trimester": 2,
+    "due_date": "2027-01-20"
+  }
+}

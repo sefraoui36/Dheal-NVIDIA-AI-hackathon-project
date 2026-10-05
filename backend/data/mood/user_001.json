@@ -1,0 +1,82 @@
+[
+  {
+    "timestamp": "2026-09-29T17:42:54",
+    "score": 4,
+    "note": "feeling good"
+  },
+  {
+    "timestamp": "2026-09-29T17:42:58",
+    "score": 4,
+    "note": "feeling good"
+  },
+  {
+    "timestamp": "2026-09-29T17:43:18",
+    "score": 3,
+    "note": "feeling good"
+  },
+  {
+    "timestamp": "2026-09-29T18:08:19",
+    "score": 4,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-29T18:08:23",
+    "score": 2,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T17:54:25",
+    "score": 4,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T17:54:30",
+    "score": 2,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T17:54:32",
+    "score": 3,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T21:03:15",
+    "score": 2,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T21:03:17",
+    "score": 4,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T21:03:18",
+    "score": 4,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T21:03:22",
+    "score": 1,
+    "note": null
+  },
+  {
+    "timestamp": "2026-09-30T21:03:23",
+    "score": 2,
+    "note": null
+  },
+  {
+    "timestamp": "2026-10-01T23:46:14",
+    "score": 1,
+    "note": null
+  },
+  {
+    "timestamp": "2026-10-05T19:05:56",
+    "score": 1,
+    "note": null
+  },
+  {
+    "timestamp": "2026-10-05T19:06:12",
+    "score": 4,
+    "note": null
+  }
+]

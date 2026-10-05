@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- base ---------- */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  background: #fcf8ff;
+  color: #1a1a2e;
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* hide scrollbars like Stitch did */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Material Symbols sizing helper */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
+}
+
+/* ---------- mascot keyframes ---------- */
+
+/* gentle up-down float */
+@keyframes mascot-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(2deg);
+  }
+}
+
+/* soft pulsing glow behind the mascot */
+@keyframes mascot-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+/* occasional blink — squishes vertically */
+@keyframes mascot-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  94%,
+  96% {
+    transform: scaleY(0.86);
+  }
+}
+
+/* worried shake for the error state */
+@keyframes mascot-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px) rotate(-2deg);
+  }
+  40% {
+    transform: translateX(6px) rotate(2deg);
+  }
+  60% {
+    transform: translateX(-4px) rotate(-1deg);
+  }
+  80% {
+    transform: translateX(4px) rotate(1deg);
+  }
+}
+
+/* thinking dots */
+@keyframes dot-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* loading bar shimmer */
+@keyframes loading-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* step fade-in */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- utility classes ---------- */
+
+.mascot-float {
+  animation: mascot-float 3s ease-in-out infinite,
+    mascot-blink 6s ease-in-out infinite;
+}
+
+.mascot-glow {
+  animation: mascot-glow 2.4s ease-in-out infinite;
+}
+
+.mascot-shake {
+  animation: mascot-shake 1.2s ease-in-out infinite;
+}
+
+.loading-bar {
+  background: linear-gradient(
+    90deg,
+    #ffdad8 0%,
+    #ff6b6b 40%,
+    #4ecdc4 60%,
+    #ffdad8 100%
+  );
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.6s linear infinite;
+}
+
+.step-item {
+  animation: step-in 0.35s ease-out both;
+}
+
+.dot-thinking {
+  animation: dot-bounce 1.2s ease-in-out infinite;
+}
+.dot-thinking:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dot-thinking:nth-child(3) {
+  animation-delay: 0.3s;
+}
+/* ---------- mascot mood states ---------- */
+
+.mascot-calm {
+  filter: drop-shadow(0 0 24px rgba(78, 205, 196, 0.55));
+  animation: mascot-float 3s ease-in-out infinite,
+    mascot-blink 6s ease-in-out infinite;
+}
+
+.mascot-alert {
+  filter: drop-shadow(0 0 24px rgba(210, 141, 34, 0.7));
+  animation: mascot-shake 1.2s ease-in-out infinite;
+}
+
+.mascot-concerned {
+  filter: drop-shadow(0 0 24px rgba(174, 47, 52, 0.6));
+  animation: mascot-float 4.2s ease-in-out infinite;
+}
+
+.mascot-happy {
+  filter: drop-shadow(0 0 24px rgba(78, 205, 196, 0.7));
+  animation: mascot-float 2.2s ease-in-out infinite,
+    mascot-blink 4s ease-in-out infinite;
+}
+/* ---------- mood journal ---------- */
+
+@keyframes journal-pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.journal-cell {
+  animation: journal-pop 0.35s ease-out both;
+}
+.journal-cell:nth-child(1) { animation-delay: 0ms; }
+.journal-cell:nth-child(2) { animation-delay: 40ms; }
+.journal-cell:nth-child(3) { animation-delay: 80ms; }
+.journal-cell:nth-child(4) { animation-delay: 120ms; }
+.journal-cell:nth-child(5) { animation-delay: 160ms; }
+.journal-cell:nth-child(6) { animation-delay: 200ms; }
+.journal-cell:nth-child(7) { animation-delay: 240ms; }

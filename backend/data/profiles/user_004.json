@@ -1,0 +1,10 @@
+{
+  "user_id": "user_004",
+  "name": "Dad",
+  "relation": "Father",
+  "age": 58,
+  "avatar_icon": "man",
+  "accent": "slate",
+  "conditions": ["hypertension"],
+  "notes": "Monitoring blood pressure trends."
+}

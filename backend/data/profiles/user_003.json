@@ -1,0 +1,10 @@
+{
+  "user_id": "user_003",
+  "name": "Mom",
+  "relation": "Mother",
+  "age": 55,
+  "avatar_icon": "woman",
+  "accent": "amber",
+  "conditions": ["menopause"],
+  "notes": "Reporting occasional sleep disruption."
+}

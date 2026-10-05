@@ -1,0 +1,13 @@
+[
+  {
+    "type": "hot_flash",
+    "timestamp": "2026-10-02T18:42:00",
+    "flash_count": 3,
+    "intensity": "mild",
+    "night_sweats": 3,
+    "mood": "good",
+    "symptoms": [
+      "night_sweat"
+    ]
+  }
+]

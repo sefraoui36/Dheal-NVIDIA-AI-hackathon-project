@@ -1,0 +1,46 @@
+{
+  "user_id": "user_001",
+  "n_records": 336,
+  "metrics": {
+    "heart_rate": {
+      "mean": 74.56,
+      "std": 5.297,
+      "min": 57.0,
+      "max": 91.0,
+      "lower_bound": 58.669,
+      "upper_bound": 90.45
+    },
+    "sleep_hours": {
+      "mean": 6.847,
+      "std": 0.456,
+      "min": 6.04,
+      "max": 7.53,
+      "lower_bound": 5.478,
+      "upper_bound": 8.216
+    },
+    "steps": {
+      "mean": 266.801,
+      "std": 143.911,
+      "min": 7.0,
+      "max": 406.0,
+      "lower_bound": -164.933,
+      "upper_bound": 698.534
+    },
+    "activity_minutes": {
+      "mean": 29.973,
+      "std": 5.54,
+      "min": 14.0,
+      "max": 45.0,
+      "lower_bound": 13.352,
+      "upper_bound": 46.594
+    },
+    "stress_level": {
+      "mean": 3.961,
+      "std": 1.442,
+      "min": 1.0,
+      "max": 9.0,
+      "lower_bound": -0.364,
+      "upper_bound": 8.287
+    }
+  }
+}

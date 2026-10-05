@@ -1,0 +1,10 @@
+{
+  "user_id": "user_001",
+  "name": "Grandma",
+  "relation": "Grandmother",
+  "age": 78,
+  "avatar_icon": "elderly_woman",
+  "accent": "coral",
+  "conditions": ["type_2_diabetes", "hypertension"],
+  "notes": "Lives alone, wears the watch every day."
+}

@@ -1,0 +1,94 @@
+[
+  {
+    "label": "fasting",
+    "timestamp": "2026-09-27T07:00:00",
+    "value": 112,
+    "type": "glucose"
+  },
+  {
+    "label": "fasting",
+    "timestamp": "2026-09-28T07:10:00",
+    "value": 128,
+    "type": "glucose"
+  },
+  {
+    "label": "after_meal",
+    "timestamp": "2026-09-28T20:00:00",
+    "value": 165,
+    "type": "glucose"
+  },
+  {
+    "label": "fasting",
+    "timestamp": "2026-09-29T07:00:00",
+    "value": 105,
+    "type": "glucose"
+  },
+  {
+    "label": "fasting",
+    "timestamp": "2026-09-30T07:15:00",
+    "value": 118,
+    "type": "glucose"
+  },
+  {
+    "label": "after_meal",
+    "timestamp": "2026-10-01T20:00:00",
+    "value": 142,
+    "type": "glucose"
+  },
+  {
+    "label": "fasting",
+    "timestamp": "2026-10-02T07:00:00",
+    "value": 110,
+    "type": "glucose"
+  },
+  {
+    "systolic": 138,
+    "timestamp": "2026-09-26T08:00:00",
+    "note": "morning",
+    "type": "bp",
+    "pulse": 76,
+    "diastolic": 88
+  },
+  {
+    "systolic": 142,
+    "timestamp": "2026-09-28T08:00:00",
+    "note": "after salty meal",
+    "type": "bp",
+    "pulse": 78,
+    "diastolic": 90
+  },
+  {
+    "systolic": 130,
+    "timestamp": "2026-09-30T08:00:00",
+    "note": "morning",
+    "type": "bp",
+    "pulse": 74,
+    "diastolic": 84
+  },
+  {
+    "systolic": 126,
+    "timestamp": "2026-10-01T08:00:00",
+    "note": "after walk",
+    "type": "bp",
+    "pulse": 72,
+    "diastolic": 82
+  },
+  {
+    "systolic": 122,
+    "timestamp": "2026-10-02T08:00:00",
+    "note": "morning",
+    "type": "bp",
+    "pulse": 70,
+    "diastolic": 79
+  },
+  {
+    "type": "water",
+    "timestamp": "2026-10-03T00:42:51",
+    "cups": 1
+  },
+  {
+    "type": "water",
+    "timestamp": "2026-10-03T00:42:51",
+    "cups": 2
+  }
+]

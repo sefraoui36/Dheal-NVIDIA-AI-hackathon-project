@@ -1,0 +1,10 @@
+{
+  "user_id": "user_002",
+  "name": "Grandpa",
+  "relation": "Grandfather",
+  "age": 80,
+  "avatar_icon": "man",
+  "accent": "mint",
+  "conditions": ["arthritis", "post_surgery_recovery"],
+  "notes": "Recently had knee surgery. Gentle activity encouraged."
+}
