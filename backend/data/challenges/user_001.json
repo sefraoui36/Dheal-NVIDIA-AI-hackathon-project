@@ -1,0 +1,17 @@
+[
+  {
+    "id": "ch_7b13b321",
+    "name": "Weekend running club",
+    "activity": "walking",
+    "duration_days": 7,
+    "start_date": "2026-10-07",
+    "end_date": "2026-10-13",
+    "participants": [
+      "user_001",
+      "friend_sara",
+      "user_003"
+    ],
+    "created_by": "user_001",
+    "status": "active"
+  }
+]

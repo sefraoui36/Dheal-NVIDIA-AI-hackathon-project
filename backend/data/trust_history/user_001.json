@@ -53,5 +53,20 @@
     "date": "2026-10-05",
     "score": 100,
     "tier": "EXCELLENT"
+  },
+  {
+    "date": "2026-10-07",
+    "score": 60,
+    "tier": "DEGRADED"
+  },
+  {
+    "date": "2026-10-09",
+    "score": 60,
+    "tier": "DEGRADED"
+  },
+  {
+    "date": "2026-10-11",
+    "score": 60,
+    "tier": "DEGRADED"
   }
 ]

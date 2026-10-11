@@ -235,3 +235,124 @@ export interface FamilyAdvice {
   text: string;
   generated_at: string;
 }
+export interface ActivityDefinition {
+  key: string;
+  label: string;
+  icon: string;
+  unit: string;
+  accent: "coral" | "mint" | "amber" | "slate";
+  metric_source: string;
+  min_daily: number;
+  max_daily: number;
+}
+
+export interface Challenge {
+  id: string;
+  name: string;
+  activity: string;
+  duration_days: number;
+  start_date: string;
+  end_date: string;
+  participants: string[];
+  created_by: string;
+  status: string;
+}
+
+export interface LeaderboardRow {
+  user_id: string;
+  name: string;
+  avatar_icon: string;
+  verified_total: number;
+  raw_total: number;
+  flagged_count: number;
+  flagged_examples: unknown[];
+  is_fully_verified: boolean;
+  rank: number;
+}
+
+export interface Leaderboard {
+  challenge: Challenge;
+  activity: ActivityDefinition;
+  leaderboard: LeaderboardRow[];
+  winner: LeaderboardRow | null;
+  lead_margin: number;
+  total_flagged: number;
+  trust_verified: boolean;
+}
+
+export interface ChallengesResponse {
+  user_id: string;
+  challenges: Challenge[];
+}
+
+export interface ActivitiesResponse {
+  activities: ActivityDefinition[];
+}
+
+export interface ChallengePersonRead {
+  name: string;
+  pattern: string;
+  suggestion: string;
+}
+
+export interface ChallengeCommentary {
+  challenge_id: string;
+  text: string;
+  per_person: ChallengePersonRead[];
+}
+
+export interface ChallengeCheer {
+  challenge_id: string;
+  target_user_id: string;
+  text: string;
+}
+
+export interface CreateChallengePayload {
+  creator_id: string;
+  name: string;
+  activity: string;
+  duration_days: number;
+  participant_ids: string[];
+  friends: { id: string; name: string }[];
+}
+export interface ProgressSeriesItem {
+  user_id: string;
+  name: string;
+  avatar_icon: string;
+  daily: number[];
+  cumulative: number[];
+  flagged_count: number;
+  color_key: "coral" | "mint" | "amber" | "slate";
+}
+
+export interface ChallengeProgress {
+  challenge: Challenge;
+  activity: ActivityDefinition;
+  dates: string[];
+  series: ProgressSeriesItem[];
+}
+export interface GoalDefinition {
+  key: string;
+  label: string;
+  icon: string;
+}
+
+export interface GoalsResponse {
+  goals: GoalDefinition[];
+}
+
+export interface DailyRecommendation {
+  user_id: string;
+  goal: string;
+  available_minutes: number;
+  date: string;
+  movement: string;
+  food: string;
+  wellness: string;
+  why: string;
+  movement_tag: string;
+  food_tag: string;
+  conditions: string[];
+  source: "nemotron_nano" | "nemotron_lightning" | "rule_based" | string;
+  generated_at: string;
+}

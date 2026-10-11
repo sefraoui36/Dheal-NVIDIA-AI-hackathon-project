@@ -395,3 +395,72 @@ Return STRICT JSON with exactly one key:
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": user_prompt},
     ]
+def build_recommendations_prompt(
+    profile: dict,
+    goal: str,
+    available_minutes: int,
+    conditions: list[str],
+) -> list[dict]:
+    """Build a prompt for the daily health recommendations page."""
+
+    condition_names = ", ".join(conditions) if conditions else "none"
+
+    user_prompt = f"""USER PROFILE
+Name: {profile.get('name', 'User')}
+Age: {profile.get('age', '—')}
+Conditions: {condition_names}
+
+USER GOAL
+{goal}
+
+AVAILABLE TIME TODAY
+{available_minutes} minutes
+
+=== YOUR TASK ===
+Produce a friendly, practical daily plan in three short parts.
+Each part is ONE sentence (max 15 words), warm and specific.
+
+1) Movement — one activity that fits the goal, the available time, and
+   is safe for the user's age. Never mention running if age > 70 unless
+   the goal explicitly asks for it.
+
+2) Food — one concrete meal or snack idea (specific ingredients) that
+   fits the goal. No calorie counts, no diets, no restrictions.
+
+3) Wellness action — one tiny habit the user can do today.
+
+ALSO pick ONE tag from each list so we can show a matching image:
+
+MOVEMENT TAGS (pick exactly one):
+  walk, brisk_walk, jog, stretch, yoga, breath, strength, cycling,
+  gym, swim, dance, general_move
+
+FOOD TAGS (pick exactly one):
+  yogurt_berries, oatmeal_banana, salad_greens, salmon_greens,
+  soup_light, eggs_toast, smoothie, fruit_nuts, chicken_veg,
+  tea_nuts, rice_bowl, pasta, nuts, general_food
+
+Rules:
+- The tag MUST match the sentence. If you say "Greek yogurt with berries",
+  use tag "yogurt_berries". If you say "apple with almond butter", use
+  "fruit_nuts".
+- NEVER medical advice, NEVER a diagnosis, NEVER medication.
+- If the user has diabetes, pregnancy, or post-surgery conditions,
+  the movement MUST be gentle (walking, stretching, light yoga).
+- Keep language friendly and encouraging.
+- 1 sentence per part.
+
+Return STRICT JSON:
+{{
+  "movement": "...",
+  "food": "...",
+  "wellness": "...",
+  "why": "one sentence (max 20 words) explaining why these fit the goal",
+  "movement_tag": "...",
+  "food_tag": "..."
+}}"""
+
+    return [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_prompt},
+    ]

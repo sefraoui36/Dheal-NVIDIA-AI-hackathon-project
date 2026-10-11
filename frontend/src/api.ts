@@ -1,11 +1,21 @@
 import axios from "axios";
 import type {
+  ActivitiesResponse,
   AIAnalyzeResponse,
   AskResponse,
   AttackResult,
   Baseline,
+  Challenge,
+  ChallengeCheer,
+  ChallengeCommentary,
+  ChallengeProgress,
+  ChallengesResponse,
+  CreateChallengePayload,
+  DailyRecommendation,
   FamilyAdvice,
+  GoalsResponse,
   Integrity,
+  Leaderboard,
   MoodResponse,
   PopulationStat,
   Profile,
@@ -21,7 +31,7 @@ const BASE_URL = "http://127.0.0.1:8000";
 const client = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
-  timeout: 60_000, // Nemotron can take 15-30s
+  timeout: 60_000,
 });
 
 export const api = {
@@ -90,10 +100,9 @@ export const api = {
 
   trustHistory: (userId: string, days = 7) =>
     client
-      .get<TrustHistoryResponse>(
-        `/telemetry/trust-history/${userId}`,
-        { params: { days } },
-      )
+      .get<TrustHistoryResponse>(`/telemetry/trust-history/${userId}`, {
+        params: { days },
+      })
       .then((r) => r.data),
 
   populationBaseline: () =>
@@ -103,7 +112,8 @@ export const api = {
         { user_id: "user_001", hours: 24 },
       )
       .then((r) => r.data.population_baseline),
-    listProfiles: () =>
+
+  listProfiles: () =>
     client.get<ProfilesResponse>("/profiles").then((r) => r.data),
 
   getProfile: (userId: string) =>
@@ -114,7 +124,7 @@ export const api = {
       .get<{ conditions: Record<string, unknown> }>("/profiles/conditions")
       .then((r) => r.data),
 
-    logTracking: (
+  logTracking: (
     userId: string,
     type: string,
     data: Record<string, unknown>,
@@ -133,8 +143,76 @@ export const api = {
         params: { type, days },
       })
       .then((r) => r.data),
-    familyAdvice: (userId: string, force = false) =>
+
+  familyAdvice: (userId: string, force = false) =>
     client
       .post<FamilyAdvice>("/family/advice", { user_id: userId, force })
+      .then((r) => r.data),
+
+  // ---------------- Challenges ----------------
+
+  listActivities: () =>
+    client
+      .get<ActivitiesResponse>("/challenges/activities")
+      .then((r) => r.data),
+
+  listChallenges: (userId: string) =>
+    client
+      .get<ChallengesResponse>(`/challenges/${userId}`)
+      .then((r) => r.data),
+
+  createChallenge: (payload: CreateChallengePayload) =>
+    client
+      .post<{ status: string; challenge: Challenge }>("/challenges", payload)
+      .then((r) => r.data),
+
+  challengeLeaderboard: (challengeId: string, userId: string) =>
+    client
+      .get<Leaderboard>(`/challenges/${challengeId}/leaderboard`, {
+        params: { user_id: userId },
+      })
+      .then((r) => r.data),
+
+  challengeCommentary: (challengeId: string, userId: string) =>
+    client
+      .post<ChallengeCommentary>(`/challenges/${challengeId}/commentary`, {
+        user_id: userId,
+      })
+      .then((r) => r.data),
+
+  challengeCheer: (
+    challengeId: string,
+    userId: string,
+    targetUserId: string,
+  ) =>
+    client
+      .post<ChallengeCheer>(`/challenges/${challengeId}/cheer`, {
+        user_id: userId,
+        target_user_id: targetUserId,
+      })
+      .then((r) => r.data),
+
+      challengeProgress: (challengeId: string, userId: string) =>
+    client
+      .get<ChallengeProgress>(`/challenges/${challengeId}/progress`, {
+        params: { user_id: userId },
+      })
+      .then((r) => r.data),
+    listGoals: () =>
+    client.get<GoalsResponse>("/recommendations/goals").then((r) => r.data),
+
+  generateRecommendations: (
+    userId: string,
+    goal: string,
+    availableMinutes = 30,
+    force = false,
+  ) =>
+    client
+      .post<DailyRecommendation>("/recommendations/generate", {
+        user_id: userId,
+        goal,
+        available_minutes: availableMinutes,
+        force,
+      })
       .then((r) => r.data),
 };

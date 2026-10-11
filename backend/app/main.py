@@ -7,10 +7,12 @@ from app.api import (
     ai_routes,
     attack_routes,
     baseline_routes,
+    challenges_routes,
     data_routes,
     family_routes,
     mood_routes,
     profile_routes,
+    recommendations_routes,
     replay_routes,
     security_routes,
     telemetry_routes,
@@ -49,6 +51,8 @@ app.include_router(telemetry_routes.router)
 app.include_router(profile_routes.router)
 app.include_router(tracking_routes.router)
 app.include_router(family_routes.router)
+app.include_router(challenges_routes.router)
+app.include_router(recommendations_routes.router)
 
 @app.get("/")
 def root():

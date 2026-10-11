@@ -2,11 +2,13 @@ interface Props {
   userId: string;
   attacked: boolean;
   busy: boolean;
-  view: "analyst" | "family";
+  view: "analyst" | "family" | "challenges" | "recommendations";
   onSimulate: () => void;
   onRestore: () => void;
   onOpenAbout: () => void;
-  onChangeView: (view: "analyst" | "family") => void;
+  onChangeView: (
+  view: "analyst" | "family" | "challenges" | "recommendations",
+) => void;
 }
 
 export function Header({
@@ -52,6 +54,19 @@ export function Header({
               }`}
             >
               Family
+            </button>
+              <button
+              onClick={() => onChangeView("recommendations")}
+              className={`px-4 py-1.5 rounded-full text-label-lg transition-all flex items-center gap-1.5 ${
+                view === "recommendations"
+                  ? "bg-surface-container-lowest text-on-surface font-semibold shadow-sm"
+                  : "text-on-surface-variant hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">
+                today
+              </span>
+              Today
             </button>
           </div>
         </div>

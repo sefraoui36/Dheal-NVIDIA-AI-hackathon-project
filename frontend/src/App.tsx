@@ -25,10 +25,11 @@ import { WhatChanged } from "./components/WhatChanged";
 import { useBootstrap } from "./lib/useBootstrap";
 import { DailyPulse } from "./components/DailyPulse";
 import { ReplayStory } from "./components/ReplayStory";
-
+import { ChallengesPage } from "./components/ChallengesPage";
+import { RecommendationsPage } from "./components/RecommendationsPage";
 const USER_ID = "user_001";
 
-type View = "analyst" | "family";
+type View = "analyst" | "family" | "challenges" | "recommendations";
 
 export default function App() {
   const { steps, data, error, loading, run, refresh } = useBootstrap(USER_ID);
@@ -100,8 +101,12 @@ export default function App() {
       />
 
       <main className="w-full pt-24 pb-16">
-        {view === "family" ? (
-          <FamilyDashboard
+          {view === "recommendations" ? (
+              <RecommendationsPage userId={USER_ID} />
+            ) : view === "challenges" ? (
+              <ChallengesPage userId={USER_ID} />
+            ) : view === "family" ? (
+            <FamilyDashboard
             userId={USER_ID}
             integrity={integrity}
             baseline={baseline}
