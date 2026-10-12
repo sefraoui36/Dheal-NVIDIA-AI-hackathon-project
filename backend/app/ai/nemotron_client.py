@@ -137,13 +137,22 @@ def _call_nemotron(
 
     content = resp.choices[0].message.content or ""
 
+    # 1) trim whitespace
+    content = content.strip()
 
-
+    # 2) extract everything between the first "{" and last "}"
     first = content.find("{")
     last = content.rfind("}")
     if first != -1 and last != -1 and last > first:
-        content = content[first: last + 1]
+        content = content[first : last + 1]
 
+    # 3) if the JSON is truncated (no closing brace), try to close it
+    if content.startswith("{") and not content.endswith("}"):
+        if content.count('"') % 2 == 1:
+            content += '"'
+        content += "}"
+
+    # 4) parse
     try:
         return json.loads(content)
     except json.JSONDecodeError:
@@ -169,6 +178,11 @@ def _call_nemotron(
         }
 
 
+# ------------------------------------------------------------------
+# Analysis / ask / prep
+# ------------------------------------------------------------------
+
+
 def analyze_replay(replay: dict, temperature: float = 0.2) -> dict:
     """Send the replay to Nemotron and return parsed JSON."""
     messages = build_prompt(replay)
@@ -189,6 +203,11 @@ def prepare_doctor_visit(replay: dict, temperature: float = 0.3) -> dict:
     return _call_nemotron(messages, kind="prep", temperature=temperature)
 
 
+# ------------------------------------------------------------------
+# Family advice
+# ------------------------------------------------------------------
+
+
 def generate_family_advice(
     profile: dict,
     timeline_summary: dict,
@@ -202,6 +221,11 @@ def generate_family_advice(
         profile, timeline_summary, timeline_rows
     )
     return _call_nemotron(messages, kind="advice", temperature=temperature)
+
+
+# ------------------------------------------------------------------
+# Challenges — coach + cheer
+# ------------------------------------------------------------------
 
 
 def generate_challenge_commentary(
@@ -219,7 +243,6 @@ def generate_challenge_commentary(
     unit = activity["unit"]
     leader = leaderboard.get("winner") or {}
 
-    # ---- Build a very short summary of each person ----
     names = [r["name"] for r in leaderboard.get("leaderboard", [])]
     totals = [r["verified_total"] for r in leaderboard.get("leaderboard", [])]
     daily_summary = []
@@ -227,9 +250,6 @@ def generate_challenge_commentary(
         recent = s["daily"][-4:]
         values = "/".join(str(round(v)) for v in recent)
         daily_summary.append(f"{s['name']}: {values}")
-
-    print(f"[DEBUG commentary] names={names}")
-    print(f"[DEBUG commentary] daily={daily_summary}")
 
     # --------- CALL 1: the coach paragraph ----------
     prompt1 = (
@@ -243,8 +263,6 @@ def generate_challenge_commentary(
         "Never medical. "
         'Return only JSON: {"text": "..."}'
     )
-
-    print(f"[DEBUG commentary] prompt1_len={len(prompt1)}")
 
     result1 = _call_nemotron(
         messages=[
@@ -263,8 +281,6 @@ def generate_challenge_commentary(
             f"with {leader.get('verified_total', 0)} {unit}. "
             "Everyone is doing well — keep it up!"
         )
-
-    print(f"[DEBUG commentary] text={text[:120]}")
 
     # --------- CALL 2: per-person suggestions ----------
     suggestions: list[dict] = []
@@ -363,10 +379,11 @@ Return STRICT JSON: {{ "text": "the message" }}"""
     )
 
 
-if __name__ == "__main__":
-    print("Available models:")
-    for m in list_models():
-        print(f"  {m}")
+# ------------------------------------------------------------------
+# Recommendations
+# ------------------------------------------------------------------
+
+
 def generate_recommendations(
     profile: dict,
     goal: str,
@@ -397,9 +414,11 @@ def generate_recommendations(
         messages=messages,
         kind="recommendations",
         temperature=0.6,
-        max_tokens=1000,
+        max_tokens=1500,
         model_override="nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
     )
+
+
 def generate_recommendations_lightning(
     profile: dict,
     goal: str,
@@ -417,7 +436,6 @@ def generate_recommendations_lightning(
         profile, goal, available_minutes, conditions
     )
 
-    # Override the system prompt with the strict "no prose" one
     messages[0] = {
         "role": "system",
         "content": (
@@ -432,6 +450,67 @@ def generate_recommendations_lightning(
         messages=messages,
         kind="recommendations",
         temperature=0.5,
-        max_tokens=1500,
+        max_tokens=4000,
         model_override="nvidia/Nemotron-3_5-Lightning",
     )
+
+
+# ------------------------------------------------------------------
+# Mood support
+# ------------------------------------------------------------------
+
+
+def generate_mood_response(
+    profile: dict,
+    user_message: str,
+    recent_mood: list,
+    crisis: bool = False,
+    health_context: str = "",
+    force_health_analysis: bool = False,
+) -> dict:
+    """
+    Generate a warm, brief reply for the mood-support chat.
+    Passes the user's real health context so the reply is DHeal-specific.
+
+    Uses Lightning (not Nano) because Nano returns empty on prompts
+    with health context. Lightning handles the longer prompt reliably.
+    """
+    from app.ai.prompt_builder import build_mood_prompt
+
+    messages = build_mood_prompt(
+        profile=profile,
+        user_message=user_message,
+        recent_mood=recent_mood,
+        crisis=crisis,
+        health_context=health_context,
+        force_health_analysis=force_health_analysis,
+    )
+
+    # Override the system prompt with a strict JSON-only one, since
+    # Lightning tends to leak chain-of-thought otherwise.
+    messages[0] = {
+        "role": "system",
+        "content": (
+            "You are DHeal Guardian — a warm wellness companion that "
+            "knows the user's real health data. "
+            "You ALWAYS reply in the same language as the user's message. "
+            "Return ONLY valid JSON. Do NOT write any reasoning, thinking, "
+            "or explanation outside the JSON. "
+            "The first character of your response must be '{' and the last "
+            "must be '}'. No prose, no markdown, no preambles."
+        ),
+    }
+
+    return _call_nemotron(
+        messages=messages,
+        kind="mood_support",
+        temperature=0.6,
+        max_tokens=2500,
+        model_override="nvidia/Nemotron-3_5-Lightning",
+    )
+
+
+if __name__ == "__main__":
+    print("Available models:")
+    for m in list_models():
+        print(f"  {m}")

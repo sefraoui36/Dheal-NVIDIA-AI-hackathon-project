@@ -356,3 +356,54 @@ export interface DailyRecommendation {
   source: "nemotron_nano" | "nemotron_lightning" | "rule_based" | string;
   generated_at: string;
 }
+// ... (tes autres types)
+
+// --- Mood Support Chat ---
+export interface MoodChatMessage {
+  role: "user" | "guardian";
+  text: string;
+  source?: string;
+  crisis?: boolean;
+  timestamp?: string;
+}
+
+export interface MoodChatResponse {
+  reply: string;
+  crisis: boolean;
+  source: string;
+  timestamp: string;
+}
+
+export interface MoodSuggestionsResponse {
+  suggestions: string[];
+}
+export interface MoodChatMessage {
+  role: "user" | "guardian";
+  text: string;
+  source?: string;
+  crisis?: boolean;
+  health_context_used?: boolean;
+  timestamp?: string;
+}
+
+export interface MoodChatResponse {
+  reply: string;
+  crisis: boolean;
+  source: string;
+  health_context_used: boolean;
+  timestamp: string;
+}
+
+export interface MoodSuggestionsResponse {
+  suggestions: string[];
+}
+
+export interface MoodHealthCheck {
+  summary: string;
+  patterns: string[];
+  mood_avg_7d: number | null;
+  sleep_avg_7d: number | null;
+  stress_avg_7d: number | null;
+  conditions: string[];
+  timestamp: string;
+}

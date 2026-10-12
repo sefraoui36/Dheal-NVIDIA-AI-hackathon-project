@@ -2,13 +2,13 @@ interface Props {
   userId: string;
   attacked: boolean;
   busy: boolean;
-  view: "analyst" | "family" | "challenges" | "recommendations";
+  view: "analyst" | "family" | "challenges" | "recommendations" | "mood";
   onSimulate: () => void;
   onRestore: () => void;
   onOpenAbout: () => void;
   onChangeView: (
-  view: "analyst" | "family" | "challenges" | "recommendations",
-) => void;
+    view: "analyst" | "family" | "challenges" | "recommendations" | "mood",
+  ) => void;
 }
 
 export function Header({
@@ -55,7 +55,20 @@ export function Header({
             >
               Family
             </button>
-              <button
+            <button
+              onClick={() => onChangeView("challenges")}
+              className={`px-4 py-1.5 rounded-full text-label-lg transition-all flex items-center gap-1.5 ${
+                view === "challenges"
+                  ? "bg-surface-container-lowest text-on-surface font-semibold shadow-sm"
+                  : "text-on-surface-variant hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">
+                emoji_events
+              </span>
+              Challenges
+            </button>
+            <button
               onClick={() => onChangeView("recommendations")}
               className={`px-4 py-1.5 rounded-full text-label-lg transition-all flex items-center gap-1.5 ${
                 view === "recommendations"
@@ -67,6 +80,19 @@ export function Header({
                 today
               </span>
               Today
+            </button>
+            <button
+              onClick={() => onChangeView("mood")}
+              className={`px-4 py-1.5 rounded-full text-label-lg transition-all flex items-center gap-1.5 ${
+                view === "mood"
+                  ? "bg-surface-container-lowest text-on-surface font-semibold shadow-sm"
+                  : "text-on-surface-variant hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">
+                mood
+              </span>
+              Mood
             </button>
           </div>
         </div>

@@ -13,5 +13,19 @@
     ],
     "created_by": "user_001",
     "status": "active"
+  },
+  {
+    "id": "ch_e90b4b66",
+    "name": "Fitness weekend challenge",
+    "activity": "gym",
+    "duration_days": 14,
+    "start_date": "2026-10-12",
+    "end_date": "2026-10-25",
+    "participants": [
+      "user_001",
+      "friend_mohammed"
+    ],
+    "created_by": "user_001",
+    "status": "active"
   }
 ]

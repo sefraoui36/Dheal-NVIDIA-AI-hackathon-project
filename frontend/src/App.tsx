@@ -3,7 +3,6 @@ import { api } from "./api";
 import { AboutModal } from "./components/AboutModal";
 import { AIInvestigation } from "./components/AIInvestigation";
 import { AskGuardian } from "./components/AskGuardian";
-import { DataControls } from "./components/DataControls";
 import { ErrorScreen } from "./components/ErrorScreen";
 import { EvidenceChain } from "./components/EvidenceChain";
 import { FamilyDashboard } from "./components/FamilyDashboard";
@@ -12,24 +11,22 @@ import { Header } from "./components/Header";
 import { HealthReplayChart } from "./components/HealthReplayChart";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { deriveMood } from "./components/Mascot";
-import { MascotGreeting } from "./components/MascotGreeting";
 import { MoodCheckIn } from "./components/MoodCheckIn";
 import { SafetyCard } from "./components/SafetyCard";
 import { SecurityGuardian } from "./components/SecurityGuardian";
 import { ShareWithDoctor } from "./components/ShareWithDoctor";
 import { SimulateAttack } from "./components/SimulateAttack";
-import { StatusBanner } from "./components/StatusBanner";
-import { TelemetryPanel } from "./components/TelemetryPanel";
-import { TrustHistoryChart } from "./components/TrustHistoryChart";
-import { WhatChanged } from "./components/WhatChanged";
 import { useBootstrap } from "./lib/useBootstrap";
 import { DailyPulse } from "./components/DailyPulse";
 import { ReplayStory } from "./components/ReplayStory";
 import { ChallengesPage } from "./components/ChallengesPage";
 import { RecommendationsPage } from "./components/RecommendationsPage";
+import { MoodSupportPage } from "./components/MoodSupportPage";
+import { MascotGreeting } from "./components/MascotGreeting";
+
 const USER_ID = "user_001";
 
-type View = "analyst" | "family" | "challenges" | "recommendations";
+type View = "analyst" | "family" | "challenges" | "recommendations" | "mood";
 
 export default function App() {
   const { steps, data, error, loading, run, refresh } = useBootstrap(USER_ID);
@@ -101,12 +98,14 @@ export default function App() {
       />
 
       <main className="w-full pt-24 pb-16">
-          {view === "recommendations" ? (
-              <RecommendationsPage userId={USER_ID} />
-            ) : view === "challenges" ? (
-              <ChallengesPage userId={USER_ID} />
-            ) : view === "family" ? (
-            <FamilyDashboard
+        {view === "mood" ? (
+          <MoodSupportPage userId={USER_ID} />
+        ) : view === "recommendations" ? (
+          <RecommendationsPage userId={USER_ID} />
+        ) : view === "challenges" ? (
+          <ChallengesPage userId={USER_ID} />
+        ) : view === "family" ? (
+          <FamilyDashboard
             userId={USER_ID}
             integrity={integrity}
             baseline={baseline}
@@ -114,52 +113,43 @@ export default function App() {
             ai={ai}
           />
         ) : (
+          /* ───── ANALYST VIEW — cleaned up + MoodCheckIn + ShareWithDoctor + FeedbackForm ───── */
           <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col gap-6">
-              <DailyPulse userId={USER_ID} timeline={timeline} ai={ai} />
+            {/* 1. DailyPulse — the human entry point */}
+            <DailyPulse userId={USER_ID} timeline={timeline} ai={ai} />
 
-              <StatusBanner
-                attacked={attacked}
-                mood={mood}
-                trustScore={ai.trust_score}
-                summary={timeline.summary}
-              />
+            {/* 2. Mascot greeting — one soft line */}
+            <MascotGreeting userId={USER_ID} timeline={timeline} ai={ai} />
 
-              <MascotGreeting userId={USER_ID} timeline={timeline} ai={ai} />
+            {/* 3. Story + chart — the demo's wow moment */}
+            <ReplayStory userId={USER_ID} timeline={timeline.timeline} />
 
-                <ReplayStory userId={USER_ID} timeline={timeline.timeline} />
+            <HealthReplayChart
+              timeline={timeline.timeline}
+              integrityValid={integrity.valid}
+            />
 
-                <HealthReplayChart
-                  timeline={timeline.timeline}
-                  integrityValid={integrity.valid}
-                />
+            {/* 4. AI Investigation — the trust layer */}
+            <AIInvestigation analysis={ai.analysis} />
 
+            {/* 5. Two-column: Security + Mood (left) · Ask + Evidence (right) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-6">
-                <WhatChanged baseline={baseline} timeline={timeline.timeline} />
-              </div>
-              <div className="lg:col-span-6">
+              <div className="lg:col-span-7 flex flex-col gap-6">
                 <SecurityGuardian
                   integrity={integrity}
                   timeline={timeline.timeline}
                 />
+                <MoodCheckIn userId={USER_ID} />
+              </div>
+              <div className="lg:col-span-5 flex flex-col gap-6">
+                <AskGuardian userId={USER_ID} />
+                <EvidenceChain timeline={timeline.timeline} />
               </div>
             </div>
 
+            {/* 6. Two-column: Simulate Attack (left) · Share with doctor (right) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-7 flex flex-col gap-6">
-                <AIInvestigation analysis={ai.analysis} />
-                <MoodCheckIn userId={USER_ID} />
-                <AskGuardian userId={USER_ID} />
-                <TelemetryPanel />
-              </div>
-              <div className="lg:col-span-5 flex flex-col gap-6">
-                <EvidenceChain timeline={timeline.timeline} />
-                <TrustHistoryChart
-                  userId={USER_ID}
-                  refreshSignal={trustRefreshSignal}
-                  onRefresh={refreshTrust}
-                />
-                <ShareWithDoctor userId={USER_ID} />
+              <div className="lg:col-span-7">
                 <SimulateAttack
                   attacked={attacked}
                   busy={busy}
@@ -167,11 +157,17 @@ export default function App() {
                   onRestore={handleRestore}
                   lastAttackTime={lastAttackTime}
                 />
-                <DataControls userId={USER_ID} />
-                <SafetyCard />
-                <FeedbackForm />
+              </div>
+              <div className="lg:col-span-5 flex flex-col gap-6">
+                <ShareWithDoctor userId={USER_ID} />
               </div>
             </div>
+
+            {/* 7. Feedback — "Rate this experience" */}
+            <FeedbackForm />
+
+            {/* 8. Safety footer */}
+            <SafetyCard />
           </div>
         )}
       </main>

@@ -83,10 +83,11 @@ def generate(req: RecommendationRequest):
 
     # 1) try Nemotron first
     # ---- 1) Try Nano ----
+    # ---- 1) Try Lightning (Nano is unreliable for this prompt) ----
     result: dict | None = None
-    source = "nemotron_nano"
+    source = "nemotron_lightning"
     try:
-        candidate = generate_recommendations(
+        candidate = generate_recommendations_lightning(
             profile, req.goal, req.available_minutes, conditions
         )
         if (
@@ -97,29 +98,13 @@ def generate(req: RecommendationRequest):
                 and candidate.get("why")
         ):
             result = candidate
+            print("[recommendations] Lightning OK")
+        else:
+            print(f"[recommendations] Lightning returned: {candidate}")
     except Exception as e:
-        print(f"[recommendations] Nano failed: {e}")
+        print(f"[recommendations] Lightning failed: {e}")
 
-    # ---- 2) Try Lightning ----
-    if result is None:
-        print("[recommendations] Nano empty — trying Lightning")
-        source = "nemotron_lightning"
-        try:
-            candidate = generate_recommendations_lightning(
-                profile, req.goal, req.available_minutes, conditions
-            )
-            if (
-                    isinstance(candidate, dict)
-                    and candidate.get("movement")
-                    and candidate.get("food")
-                    and candidate.get("wellness")
-                    and candidate.get("why")
-            ):
-                result = candidate
-        except Exception as e:
-            print(f"[recommendations] Lightning failed: {e}")
-
-    # ---- 3) Rule-based fallback ----
+    # ---- 2) Rule-based fallback ----
     if result is None:
         print("[recommendations] using rule-based fallback")
         result = build_recommendations_rule_based(req.user_id, req.goal)

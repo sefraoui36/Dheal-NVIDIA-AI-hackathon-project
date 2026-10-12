@@ -24,9 +24,13 @@ import type {
   TimelineResponse,
   TrackingResponse,
   TrustHistoryResponse,
+  MoodChatResponse,
+  MoodHealthCheck,
+  MoodSuggestionsResponse,
 } from "./types";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 const client = axios.create({
   baseURL: BASE_URL,
@@ -214,5 +218,27 @@ export const api = {
         available_minutes: availableMinutes,
         force,
       })
+      .then((r) => r.data),
+     moodSupportChat: (
+    userId: string,
+    message: string,
+    forceHealthAnalysis = false,
+  ) =>
+    client
+      .post<MoodChatResponse>("/mood-support/chat", {
+        user_id: userId,
+        message,
+        force_health_analysis: forceHealthAnalysis,
+      })
+      .then((r) => r.data),
+
+  moodHealthCheck: (userId: string) =>
+    client
+      .get<MoodHealthCheck>(`/mood-support/health-check/${userId}`)
+      .then((r) => r.data),
+
+  moodSuggestions: () =>
+    client
+      .get<MoodSuggestionsResponse>("/mood-support/suggestions")
       .then((r) => r.data),
 };

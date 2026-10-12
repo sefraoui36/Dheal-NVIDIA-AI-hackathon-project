@@ -432,21 +432,54 @@ Each part is ONE sentence (max 15 words), warm and specific.
 ALSO pick ONE tag from each list so we can show a matching image:
 
 MOVEMENT TAGS (pick exactly one):
-  walk, brisk_walk, jog, stretch, yoga, breath, strength, cycling,
-  gym, swim, dance, general_move
+  walk          → gentle or brisk walking
+  brisk_walk    → faster walking / cardio walk
+  jog           → light jogging
+  stretch       → stretching, flexibility
+  yoga          → yoga, gentle yoga
+  breath        → breathing exercises, meditation
+  strength      → squats, push-ups, weights, resistance
+  cycling       → bike, bicycle
+  gym           → gym equipment, machines
+  swim          → swimming
+  dance         → dancing
+  general_move  → only if nothing else fits
 
 FOOD TAGS (pick exactly one):
-  yogurt_berries, oatmeal_banana, salad_greens, salmon_greens,
-  soup_light, eggs_toast, smoothie, fruit_nuts, chicken_veg,
-  tea_nuts, rice_bowl, pasta, nuts, general_food
+  yogurt_berries  → yogurt, berries, Greek yogurt
+  oatmeal_banana  → oatmeal, oats, porridge, banana
+  salad_greens    → salad, greens, vegetables, lettuce
+  salmon_greens   → salmon, fish, greens
+  soup_light      → soup, broth, stew
+  eggs_toast      → eggs, omelet, toast
+  smoothie        → smoothie, shake
+  fruit_nuts      → apple, fruit, nuts, almonds, walnuts
+  chicken_veg     → chicken, poultry, vegetables
+  tea_nuts        → tea, herbal, chamomile
+  rice_bowl       → rice, quinoa, grain, bowl
+  pasta           → pasta, noodles, spaghetti
+  nuts            → mixed nuts, peanut, almonds alone
+  general_food    → only if nothing else fits
 
-Rules:
-- The tag MUST match the sentence. If you say "Greek yogurt with berries",
-  use tag "yogurt_berries". If you say "apple with almond butter", use
-  "fruit_nuts".
+=== TAG RULES (CRITICAL) ===
+- The tag MUST match the sentence exactly. If the sentence mentions "yoga",
+  the movement_tag is "yoga". If it mentions "salad", the food_tag is "salad_greens".
+- Do NOT default to "walk" if the sentence is about yoga, stretching,
+  breathing, or anything else.
+- Do NOT default to "yogurt_berries" if the sentence is about oatmeal,
+  salad, salmon, soup, or anything else.
+- Match the specific activity or food word in your sentence.
+
+=== CONTENT RULES ===
 - NEVER medical advice, NEVER a diagnosis, NEVER medication.
 - If the user has diabetes, pregnancy, or post-surgery conditions,
   the movement MUST be gentle (walking, stretching, light yoga).
+- For the goal "reduce_stress", prefer: yoga, breath, or stretch —
+  NOT walk (walk is for fitness).
+- For the goal "improve_sleep", prefer: stretch, breath, or yoga —
+  NOT walk.
+- For the goal "gain_weight", prefer: strength, gym, or cycling —
+  NOT walk.
 - Keep language friendly and encouraging.
 - 1 sentence per part.
 
@@ -462,5 +495,110 @@ Return STRICT JSON:
 
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_prompt},
+    ]
+
+def build_mood_prompt(
+    profile: dict,
+    user_message: str,
+    recent_mood: list,
+    crisis: bool,
+    health_context: str = "",
+    force_health_analysis: bool = False,
+) -> list[dict]:
+    """
+    Build a prompt for the mood-support chat.
+
+    The AI is a warm companion that USES the user's real health data
+    to make its reply specific to DHeal. It never diagnoses.
+
+    - `health_context`: plain-text block of correlations
+      (mood trend + sleep + HR + stress) prepared by the backend.
+    - `force_health_analysis`: when True, the AI MUST mention at least
+      one health pattern in its reply (used by the "Does this affect
+      my health?" button).
+    """
+
+    name = profile.get("name", "there")
+    mood_history = ", ".join(
+        f"{m.get('date', '?')}={m.get('avg_score', '?')}"
+        for m in (recent_mood or [])[-5:]
+    ) or "no recent entries"
+
+    crisis_rule = ""
+    if crisis:
+        crisis_rule = (
+            "\n10. The user's message may indicate crisis or self-harm. "
+            "You MUST begin your reply by gently urging them to reach out "
+            "to a trusted person or local emergency services right now. "
+            "Then, keep the rest of the reply short and caring. "
+            "Do NOT attempt to counsel through a crisis yourself."
+        )
+
+    health_rule = ""
+    if force_health_analysis:
+        health_rule = (
+            "\n11. The user explicitly asked whether their feeling affects "
+            "their health. You MUST reference at least one specific number "
+            "or pattern from the HEALTH CONTEXT below (e.g. sleep hours, "
+            "stress level, heart-rate trend). Do NOT make it up if data is "
+            "missing — instead say clearly that there isn't enough data yet."
+        )
+    elif health_context and "No health data" not in health_context:
+        health_rule = (
+            "\n11. The user's message often asks a SPECIFIC question "
+            "(e.g. 'does my stress affect my heart?'). Identify what the "
+            "user is really asking, and answer THAT question using a "
+            "specific number from the HEALTH CONTEXT. If the context "
+            "doesn't have data on that exact point, say so honestly "
+            "(\"I don't have enough data on that yet\") instead of "
+            "quoting an unrelated number."
+        )
+
+    user_prompt = f"""USER: {name}
+Recent mood trend: {mood_history}
+
+=== HEALTH CONTEXT (this is what makes your reply unique to DHeal) ===
+{health_context or "No health data available."}
+
+USER MESSAGE:
+"{user_message}"
+
+=== YOUR TASK ===
+Reply as a warm wellness companion that KNOWS this person's real data.
+You are NOT a therapist, NOT a doctor.
+
+Rules:
+1. REPLY IN THE SAME LANGUAGE AS THE USER'S MESSAGE.
+   If the user writes in French, reply in French.
+   If the user writes in English, reply in English.
+   If the user writes in Arabic, reply in Arabic.
+2. Acknowledge the feeling in one short sentence — warm, not clinical.
+3. NEVER diagnose. NEVER mention a disease name. NEVER recommend medication.
+4. Offer ONE small, practical action the user can do right now.
+5. Keep the whole reply under 80 words.
+6. Never say "as an AI" or "I'm just a model".
+7. Do NOT claim to be a therapist or mental-health professional.
+8. When you cite health data, phrase it as an observation of THEIR numbers,
+   never as a medical conclusion. Use "I see that…" not "this means…".
+9. NEVER say "you should see a doctor" unless the user explicitly asks.{crisis_rule}{health_rule}
+
+Return STRICT JSON:
+{{
+  "reply": "your warm, specific reply here"
+}}"""
+
+    return [
+        {
+            "role": "system",
+            "content": (
+                "You are DHeal Guardian — a wellness companion that has "
+                "access to the user's real health data. You use it to make "
+                "your replies specific and useful. You are NOT a therapist, "
+                "doctor, or crisis counselor. "
+                "You ALWAYS reply in the same language as the user's message. "
+                "Always return valid JSON. No prose outside JSON."
+            ),
+        },
         {"role": "user", "content": user_prompt},
     ]
