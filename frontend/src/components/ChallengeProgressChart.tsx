@@ -12,7 +12,6 @@ import { api } from "../api";
 import type {
   ActivityDefinition,
   ChallengeProgress,
-  ProgressSeriesItem,
 } from "../types";
 
 interface Props {
@@ -174,12 +173,13 @@ export function ChallengeProgressChart({ challengeId, userId }: Props) {
                 border: "1px solid #E0BFBD",
                 fontSize: 12,
               }}
-              formatter={(value: number, key: string) => {
-                const s = data.series.find((x) => x.user_id === key);
+                           formatter={(value, key) => {
+                const num = typeof value === "number" ? value : 0;
+                const s = data.series.find((x) => x.user_id === String(key));
                 return [
-                  formatValue(value, data.activity),
-                  s?.name ?? key,
-                ];
+                  formatValue(num, data.activity),
+                  s?.name ?? String(key),
+                ] as [string, string];
               }}
               labelFormatter={(_l, payload) => {
                 const p = payload?.[0]?.payload as

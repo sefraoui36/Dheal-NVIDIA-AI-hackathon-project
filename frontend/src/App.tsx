@@ -10,7 +10,6 @@ import { FeedbackForm } from "./components/FeedbackForm";
 import { Header } from "./components/Header";
 import { HealthReplayChart } from "./components/HealthReplayChart";
 import { LoadingScreen } from "./components/LoadingScreen";
-import { deriveMood } from "./components/Mascot";
 import { MoodCheckIn } from "./components/MoodCheckIn";
 import { SafetyCard } from "./components/SafetyCard";
 import { SecurityGuardian } from "./components/SecurityGuardian";
@@ -35,17 +34,11 @@ export default function App() {
   const [lastAttackTime, setLastAttackTime] = useState<string | null>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [view, setView] = useState<View>("analyst");
-  const [trustRefreshSignal, setTrustRefreshSignal] = useState(0);
 
   useEffect(() => {
     run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const refreshTrust = async () => {
-    await refresh();
-    setTrustRefreshSignal((n) => n + 1);
-  };
 
   const handleSimulate = async () => {
     setBusy(true);
@@ -54,7 +47,6 @@ export default function App() {
       setLastAttackTime(res.attack_timestamp);
       setAttacked(true);
       await refresh();
-      setTrustRefreshSignal((n) => n + 1);
     } catch (e) {
       console.error(e);
     } finally {
@@ -69,7 +61,6 @@ export default function App() {
       setAttacked(false);
       setLastAttackTime(null);
       await refresh();
-      setTrustRefreshSignal((n) => n + 1);
     } catch (e) {
       console.error(e);
     } finally {
@@ -82,7 +73,6 @@ export default function App() {
   if (!data) return <LoadingScreen steps={steps} />;
 
   const { integrity, baseline, timeline, ai } = data;
-  const mood = deriveMood(timeline.timeline, ai.analysis.confidence, attacked);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -113,26 +103,16 @@ export default function App() {
             ai={ai}
           />
         ) : (
-          /* ───── ANALYST VIEW — cleaned up + MoodCheckIn + ShareWithDoctor + FeedbackForm ───── */
           <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col gap-6">
-            {/* 1. DailyPulse — the human entry point */}
             <DailyPulse userId={USER_ID} timeline={timeline} ai={ai} />
-
-            {/* 2. Mascot greeting — one soft line */}
             <MascotGreeting userId={USER_ID} timeline={timeline} ai={ai} />
-
-            {/* 3. Story + chart — the demo's wow moment */}
             <ReplayStory userId={USER_ID} timeline={timeline.timeline} />
-
             <HealthReplayChart
               timeline={timeline.timeline}
               integrityValid={integrity.valid}
             />
-
-            {/* 4. AI Investigation — the trust layer */}
             <AIInvestigation analysis={ai.analysis} />
 
-            {/* 5. Two-column: Security + Mood (left) · Ask + Evidence (right) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7 flex flex-col gap-6">
                 <SecurityGuardian
@@ -147,7 +127,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* 6. Two-column: Simulate Attack (left) · Share with doctor (right) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7">
                 <SimulateAttack
@@ -163,10 +142,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* 7. Feedback — "Rate this experience" */}
             <FeedbackForm />
-
-            {/* 8. Safety footer */}
             <SafetyCard />
           </div>
         )}

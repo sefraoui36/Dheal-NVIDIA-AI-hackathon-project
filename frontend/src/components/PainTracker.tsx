@@ -152,7 +152,7 @@ export function PainTracker({ userId }: Props) {
             </span>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="font-display text-3xl font-bold text-on-surface tabular-nums">
-                {last.score}
+                {String(last.score)}
               </span>
               <span className="text-label-sm text-on-surface-variant">
                 / 10

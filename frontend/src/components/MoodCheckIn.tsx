@@ -72,8 +72,9 @@ function scoreToLabel(score: number | null): string {
   return FACES[Math.round(score) - 1]?.label ?? "—";
 }
 
-/** Build the last 7 days (oldest → today), aligned with backend `daily` data. */
-function buildLast7Days(daily: MoodDaily[]): { date: string; avg: number | null }[] {
+function buildLast7Days(
+  daily: MoodDaily[],
+): { date: string; avg: number | null }[] {
   const map = new Map<string, number>();
   daily.forEach((d) => map.set(d.date, d.avg_score));
 
@@ -88,7 +89,6 @@ function buildLast7Days(daily: MoodDaily[]): { date: string; avg: number | null 
   return out;
 }
 
-/** Count consecutive days ending today with a non-null avg. */
 function computeStreak(days: { date: string; avg: number | null }[]): number {
   let streak = 0;
   for (let i = days.length - 1; i >= 0; i--) {
@@ -117,7 +117,7 @@ export function MoodCheckIn({ userId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  const log = async (score: number, mood: MascotMood) => {
+  const log = async (score: number, _mood: MascotMood) => {
     if (busy) return;
     setBusy(true);
     setJustLogged(score);
@@ -144,8 +144,8 @@ export function MoodCheckIn({ userId }: Props) {
 
   return (
     <div
-  id="mood-checkin"
-  className="bg-surface-container-lowest/90 backdrop-blur-xl rounded-3xl p-6 shadow-md flex flex-col gap-5"
+      id="mood-checkin"
+      className="bg-surface-container-lowest/90 backdrop-blur-xl rounded-3xl p-6 shadow-md flex flex-col gap-5"
     >
       {/* header */}
       <div className="flex items-center justify-between">
@@ -167,7 +167,9 @@ export function MoodCheckIn({ userId }: Props) {
 
         {streak > 0 && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-fixed/60 text-on-primary-fixed-variant">
-            <span className="material-symbols-outlined text-[16px]">local_fire_department</span>
+            <span className="material-symbols-outlined text-[16px]">
+              local_fire_department
+            </span>
             <span className="text-label-sm font-semibold">
               {streak}-day streak
             </span>
@@ -257,7 +259,7 @@ export function MoodCheckIn({ userId }: Props) {
                     hasLog ? "text-on-surface" : "text-outline"
                   }`}
                 >
-                  {hasLog ? avg?.toFixed(1) : "—"}
+                  {hasLog && avg !== null ? avg.toFixed(1) : "—"}
                 </span>
               </div>
             );
@@ -303,8 +305,13 @@ export function MoodCheckIn({ userId }: Props) {
                     border: "1px solid #E0BFBD",
                     fontSize: 11,
                   }}
-                  formatter={(v: number) => [`${v} / 5`, "Mood"]}
-                  labelFormatter={(l: string) => `Date: ${l}`}
+                  formatter={(v) =>
+                    [`${typeof v === "number" ? v : 0} / 5`, "Mood"] as [
+                      string,
+                      string,
+                    ]
+                  }
+                  labelFormatter={(l) => `Date: ${String(l)}`}
                 />
                 <Bar dataKey="avg_score" radius={[6, 6, 0, 0]}>
                   {chart.map((d, i) => (

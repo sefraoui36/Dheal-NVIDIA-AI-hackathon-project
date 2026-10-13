@@ -48,7 +48,6 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
       ? timeline[selectedIndex + 1]
       : null;
 
-  // recharts fires this when the mouse enters / moves inside the plot area
   const handleChartMouseMove = (state: {
     activeTooltipIndex?: number | string | null;
   }) => {
@@ -63,7 +62,6 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
     }
   };
 
-  // recharts fires this on click — we use whichever index is currently hovered
   const handleChartClick = () => {
     if (hoveredIndex !== null) {
       setSelectedIndex(hoveredIndex);
@@ -170,7 +168,12 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
                 border: "1px solid #e0bfbd",
                 fontSize: 12,
               }}
-              formatter={(value: number) => [`${value} BPM`, "Heart rate"]}
+              formatter={(value) =>
+                [
+                  `${typeof value === "number" ? value : 0} BPM`,
+                  "Heart rate",
+                ] as [string, string]
+              }
             />
             <Legend wrapperStyle={{ display: "none" }} />
 
@@ -199,7 +202,7 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
               activeDot={{ r: 6 }}
             />
 
-            {/* invisible halos — larger click targets, still helpful for hover */}
+            {/* invisible halos — larger click targets */}
             {data.map((d) => (
               <ReferenceDot
                 key={`hit-${d.index}`}
@@ -208,7 +211,6 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
                 r={10}
                 fill="transparent"
                 stroke="transparent"
-                isFront={true}
                 style={{ cursor: "pointer" }}
               />
             ))}
@@ -224,7 +226,6 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
                 fillOpacity={trustLens ? 0.2 : 1}
                 stroke="#006a65"
                 strokeOpacity={trustLens ? 0.2 : 1}
-                isFront={false}
               />
             ))}
 
@@ -241,7 +242,6 @@ export function HealthReplayChart({ timeline, integrityValid = true }: Props) {
                   fill={trustLens ? "transparent" : color}
                   stroke={color}
                   strokeWidth={trustLens ? 2.5 : 2}
-                  isFront={true}
                 />
               );
             })}

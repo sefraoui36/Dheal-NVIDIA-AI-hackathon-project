@@ -127,7 +127,7 @@ export function BPTracker({ userId }: Props) {
             </span>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="font-display text-3xl font-bold text-on-surface tabular-nums">
-                {last.systolic}/{last.diastolic}
+                {String(last.systolic)}/{String(last.diastolic)}
               </span>
               <span className="text-label-sm text-on-surface-variant">
                 mmHg
@@ -140,7 +140,7 @@ export function BPTracker({ userId }: Props) {
                 hour: "2-digit",
                 minute: "2-digit",
               })}
-              {last.pulse ? ` · pulse ${last.pulse}` : ""}
+             {last.pulse ? ` · pulse ${String(last.pulse)}` : ""}
             </span>
           </div>
 

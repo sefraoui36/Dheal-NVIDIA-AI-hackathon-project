@@ -36,7 +36,7 @@ const ACCENT_RING: Record<string, string> = {
 
 export function FamilyDashboard({
   userId,
-  baseline,
+  baseline: _baseline,
   timeline,
   ai,
 }: Props) {

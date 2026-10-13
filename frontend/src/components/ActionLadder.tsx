@@ -22,7 +22,7 @@ const EMERGENCY_NUMBERS = {
 };
 
 export function ActionLadder({
-  trustScore,
+  trustScore: _trustScore,
   summary,
   timeline,
   careForName = "your loved one",
